@@ -20,7 +20,7 @@ public interface DataTransactionJpaRepositoryOracle extends JpaRepository<Native
                  );
 
 
-    @Query(value =  "SELECT A.USERNAME, FULLNAME CLIENTNAME, SESSION_ID SESSIONID, UPDATED_TIME UPDATEDTIME FROM APP_USER A " +
+    @Query(value =  "SELECT A.USERNAME, FULLNAME CLIENTNAME,A.CLIENTCODE,SESSION_ID SESSIONID, UPDATED_TIME UPDATEDTIME FROM APP_USER A " +
                     "LEFT JOIN APP_SESS_DASHBOARD B ON A.USERNAME = B.USERNAME " +
                     "WHERE SESSION_ID = :sessionId ", nativeQuery = true)
     LoginResult getSessionStatus(@Param("sessionId") String sessionId);

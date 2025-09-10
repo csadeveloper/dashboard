@@ -6,4 +6,5 @@ public interface LoginResult {
     String getClientName();
     String getSessionId();
     String getUpdatedTime();
+    String getClientCode();
 }
