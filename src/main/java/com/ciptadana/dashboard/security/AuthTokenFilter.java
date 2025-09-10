@@ -52,7 +52,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            // 3. Gunakan 'log' (dari @Slf4j) untuk mencatat error
             log.error("Cannot set user authentication: {}", e.getMessage());
         }
 
