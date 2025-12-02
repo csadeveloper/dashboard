@@ -35,4 +35,26 @@ public class DataTransactionRepositoryOracle {
         dataTransactionJpaRepositoryOracle.updateSessionLogout(sessionId, username, statusLogin, updatedTime);
     }
 
+    public void invalidateOldSessions( String username, int statusLogin, String updatedTime){
+
+        dataTransactionJpaRepositoryOracle.invalidateOldSessions(username, statusLogin, updatedTime);
+    }
+
+
+    public List<String> getUserType(String username){
+
+        return dataTransactionJpaRepositoryOracle.getUserType(username);
+    }
+
+    public List<Integer> getAccEnabled(String username){
+
+        return dataTransactionJpaRepositoryOracle.getAccEnabled(username);
+    }
+
+    public void updatePassword(String username, String newPassword){
+
+        dataTransactionJpaRepositoryOracle.updatePassword(username, username + newPassword);
+
+    }
+
 }

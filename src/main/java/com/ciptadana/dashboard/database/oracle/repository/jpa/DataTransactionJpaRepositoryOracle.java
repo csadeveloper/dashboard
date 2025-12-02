@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface DataTransactionJpaRepositoryOracle extends JpaRepository<NativeEntity, String> {
 
@@ -20,7 +22,7 @@ public interface DataTransactionJpaRepositoryOracle extends JpaRepository<Native
                  );
 
 
-    @Query(value =  "SELECT A.USERNAME, FULLNAME CLIENTNAME,A.CLIENTCODE,SESSION_ID SESSIONID, UPDATED_TIME UPDATEDTIME FROM APP_USER A " +
+    @Query(value =  "SELECT A.USERNAME, FULLNAME CLIENTNAME,A.CLIENTCODE,SESSION_ID SESSIONID, B.STATUS STATUS, UPDATED_TIME UPDATEDTIME FROM APP_USER A " +
                     "LEFT JOIN APP_SESS_DASHBOARD B ON A.USERNAME = B.USERNAME " +
                     "WHERE SESSION_ID = :sessionId ", nativeQuery = true)
     LoginResult getSessionStatus(@Param("sessionId") String sessionId);
@@ -46,4 +48,25 @@ public interface DataTransactionJpaRepositoryOracle extends JpaRepository<Native
                                @Param("updatedTime") String updatedTime
     );
 
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE CORE.APP_SESS_DASHBOARD " +
+            "SET STATUS = :statusLogin, UPDATED_TIME = :updatedTime " +
+            "WHERE USERNAME = :username AND STATUS = 0", nativeQuery = true)
+    void invalidateOldSessions(@Param("username") String username,
+                               @Param("statusLogin") int statusLogin,
+                               @Param("updatedTime") String updatedTime);
+
+    @Query(value =  "SELECT CLIENTCODE FROM APP_USER WHERE USERNAME = :username AND USERTYPE = 'DASH' ", nativeQuery = true)
+    List<String> getUserType(@Param("username") String username);
+
+    @Query(value =  "SELECT ACCOUNT_ENABLED FROM APP_USER WHERE USERNAME = :username AND USERTYPE = 'DASH' ", nativeQuery = true)
+    List<Integer> getAccEnabled(@Param("username") String username);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE CORE.APP_USER SET PASSWORD1 = SHA1(:hashedPassword) " +
+            "WHERE USERNAME = :username", nativeQuery = true)
+    void updatePassword(@Param("username") String username,
+                        @Param("hashedPassword") String hashedPassword);
 }

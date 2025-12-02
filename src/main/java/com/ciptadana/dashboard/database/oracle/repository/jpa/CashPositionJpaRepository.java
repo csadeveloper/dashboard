@@ -14,6 +14,9 @@ public interface CashPositionJpaRepository extends JpaRepository<NativeEntity, S
     @Procedure(procedureName = "BOGOR.API_CLIENTBUYINGPOWER")
     void executeApiClientBuyingPower(@Param("P_CLIENT_CODE") String clientCode, @Param("RES") String res);
 
-    @Query(value = "SELECT * FROM V_BP_FO WHERE ROWNUM = 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM V_BP WHERE ROWNUM = 1", nativeQuery = true)
     CashPositionProjection getCashPosition();
+
+    @Query(value = "SELECT CLIENT_RATING FROM V_BP WHERE ROWNUM = 1", nativeQuery = true)
+    String getClientRating();
 }

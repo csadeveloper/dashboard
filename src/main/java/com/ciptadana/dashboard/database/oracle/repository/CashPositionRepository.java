@@ -18,4 +18,8 @@ public class CashPositionRepository {
     public CashPositionProjection getCashPosition() {
         return cashPositionJpaRepository.getCashPosition();
     }
+
+    public String getClientRating() {
+        return cashPositionJpaRepository.getClientRating();
+    }
 }

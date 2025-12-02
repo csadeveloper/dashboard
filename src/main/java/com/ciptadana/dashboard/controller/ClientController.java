@@ -1,39 +1,33 @@
 package com.ciptadana.dashboard.controller;
 
-import com.ciptadana.dashboard.database.oracle.repository.dto.CashPositionDTO;
+import com.ciptadana.dashboard.database.backoffice.repository.dto.ClientDTO;
+import com.ciptadana.dashboard.database.oracle.repository.dto.PortfolioDTO;
 import com.ciptadana.dashboard.database.oracle.repository.jpa.projection.LoginResult;
 import com.ciptadana.dashboard.exception.ResourceNotFoundException;
 import com.ciptadana.dashboard.exception.UnauthorizedException;
-import com.ciptadana.dashboard.service.CashPositionService;
+import com.ciptadana.dashboard.service.ClientService;
 import com.ciptadana.dashboard.service.DashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/v1/cash-position")
-@RequiredArgsConstructor
-public class CashPositionController {
+import java.util.List;
 
-    private final CashPositionService cashPositionService;
+@RestController
+@RequestMapping("/api/v1/client")
+@RequiredArgsConstructor
+public class ClientController {
+    private final ClientService clientService;
     private final DashboardService sessionService;
 
-    /**@GetMapping("/{clientCode}")
-    public ResponseEntity<CashPositionDTO> getCashPosition(@PathVariable String clientCode) {
-        CashPositionDTO data = cashPositionService.getCashPosition(clientCode);
-        return ResponseEntity.ok(data);
-    }**/
-
     @GetMapping("/{clientCode}")
-    public ResponseEntity<CashPositionDTO> getCashPosition(
+    public ResponseEntity<ClientDTO> getClientDetail(
             @PathVariable String clientCode,
             @RequestHeader("Authorization") String authorizationHeader) {
 
-        System.out.println("Authorization getCashPosition: "+authorizationHeader);
         String sessionId = authorizationHeader.replace("Bearer ", "").trim();
-        System.out.println("Authorization getCashPosition: " + sessionId);
 
-        // ✅ Cek status session sebelum lanjut
+        // ✅ Validasi session
         LoginResult session = sessionService.validateActiveSession(sessionId);
         if (session == null || session.getStatus() != 0) {
             throw new UnauthorizedException("Session is invalid or expired");
@@ -44,12 +38,10 @@ public class CashPositionController {
         }
 
         // ✅ Session valid → ambil data
-        CashPositionDTO data = cashPositionService.getCashPosition(clientCode);
+        ClientDTO data = clientService.getClientDetail(clientCode);
         if (data == null) {
-            throw new ResourceNotFoundException("CashPosition data tidak ditemukan");
+            throw new ResourceNotFoundException("Client data tidak ditemukan");
         }
-
         return ResponseEntity.ok(data);
     }
-
 }

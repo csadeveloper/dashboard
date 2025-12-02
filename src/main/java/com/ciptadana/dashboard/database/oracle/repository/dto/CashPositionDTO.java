@@ -12,6 +12,7 @@ public class CashPositionDTO {
     private BigDecimal loanratio;
     private BigDecimal marketvalue;
     private BigDecimal modifiedmarketvalue;
+    private BigDecimal modifiedloanvalue;
     private BigDecimal modifiedloanratio;
     private BigDecimal tradinglimit;
     private String clienttypecode;

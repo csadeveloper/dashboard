@@ -9,6 +9,7 @@ public interface CashPositionProjection {
     BigDecimal getLoanratio();
     BigDecimal getMarketvalue();
     BigDecimal getModifiedmarketvalue();
+    BigDecimal getModifiedloanvalue();
     BigDecimal getModifiedloanratio();
     BigDecimal getTradinglimit();
     String getClienttypecode();

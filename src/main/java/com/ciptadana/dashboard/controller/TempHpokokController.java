@@ -1,11 +1,11 @@
 package com.ciptadana.dashboard.controller;
 
-import com.ciptadana.dashboard.database.oracle.repository.dto.PortfolioDTO;
+import com.ciptadana.dashboard.database.oracle.repository.dto.TempHpokokDTO;
 import com.ciptadana.dashboard.database.oracle.repository.jpa.projection.LoginResult;
 import com.ciptadana.dashboard.exception.ResourceNotFoundException;
 import com.ciptadana.dashboard.exception.UnauthorizedException;
 import com.ciptadana.dashboard.service.DashboardService;
-import com.ciptadana.dashboard.service.PortfolioService;
+import com.ciptadana.dashboard.service.TempHpokokService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,28 +13,22 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/portfolio-list")
+@RequestMapping("/api/v1/tmp-hpokok")
 @RequiredArgsConstructor
-public class PortfolioListController {
+public class TempHpokokController {
 
-    private final PortfolioService portfolioService;
+    private final TempHpokokService tempHpokokService;
     private final DashboardService sessionService;
 
-    /**@GetMapping("/{clientCode}")
-    public ResponseEntity<List<PortfolioDTO>> getPortfolioList(@PathVariable String clientCode) {
-        List<PortfolioDTO> data = portfolioService.getPortfolioList(clientCode);
-        return ResponseEntity.ok(data);
-    }**/
-
     @GetMapping("/{clientCode}")
-    public ResponseEntity<List<PortfolioDTO>> getPortfolioList(
-            @PathVariable String clientCode,
-            @RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<List<TempHpokokDTO>> getTempHpokok(@PathVariable String clientCode,
+                                                             @RequestHeader("Authorization") String authorizationHeader) {
 
+        System.out.println("Authorization getTempHpokok: " + authorizationHeader);
+
+        // Extract sessionId dari Authorization header
         String sessionId = authorizationHeader.replace("Bearer ", "").trim();
-//        System.out.println("Authorization getPortfolioList: " + sessionId);
 
-        // ✅ Validasi session
         LoginResult session = sessionService.validateActiveSession(sessionId);
         if (session == null || session.getStatus() != 0) {
             throw new UnauthorizedException("Session is invalid or expired");
@@ -44,10 +38,10 @@ public class PortfolioListController {
             throw new UnauthorizedException("Client code mismatch");
         }
 
-        // ✅ Session valid → ambil data
-        List<PortfolioDTO> data = portfolioService.getPortfolioList(clientCode);
-        if (data == null) {
-            throw new ResourceNotFoundException("Portfolio data tidak ditemukan");
+        // data dari service
+        List<TempHpokokDTO> data = tempHpokokService.getTempHpokok(clientCode);
+        if (data.isEmpty()) {
+            throw new ResourceNotFoundException("Data portfolio tidak ditemukan");
         }
         return ResponseEntity.ok(data);
     }
