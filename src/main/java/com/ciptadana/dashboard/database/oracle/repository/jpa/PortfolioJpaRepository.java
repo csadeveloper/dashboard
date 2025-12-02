@@ -12,6 +12,6 @@ import java.util.List;
 @Repository
 public interface PortfolioJpaRepository extends JpaRepository<NativeEntity, String> {
 
-    @Query(value = "SELECT * FROM V_GET_PORTFOLIO_LIST WHERE NCLIENT = :clientCode ORDER BY PORTFOLIO_USER", nativeQuery = true)
+    @Query(value = "SELECT * FROM V_GET_PORTFOLIO_LIST WHERE NCLIENT = :clientCode ORDER BY NSHARE", nativeQuery = true)
     List<PortfolioListProjection> getPortfolioList(@Param("clientCode") String clientCode);
 }
